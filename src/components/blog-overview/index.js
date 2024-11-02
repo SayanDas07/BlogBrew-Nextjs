@@ -37,11 +37,11 @@ function BlogOverview({ blogList }) {
       setLoading(true);
       const apiResponse =
         currentEditedBlogID !== null
-          ? await fetch(`/api/update?id=${currentEditedBlogID}`, {
+          ? await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/update?id=${currentEditedBlogID}`, {
               method: "PUT",
               body: JSON.stringify(blogFormData),
             })
-          : await fetch("/api/add", {
+          : await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/add`, {
               method: "POST",
               body: JSON.stringify(blogFormData),
             });
@@ -63,7 +63,7 @@ function BlogOverview({ blogList }) {
 
   async function handleDeleteBlogByID(getCurrentID) {
     try {
-      const apiResponse = await fetch(`/api/delete?id=${getCurrentID}`, {
+      const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/delete?id=${getCurrentID}`, {
         method: "DELETE",
       });
       const result = await apiResponse.json();
