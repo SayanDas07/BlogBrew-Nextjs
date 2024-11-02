@@ -1,22 +1,37 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import BlogOverview from "@/components/blog-overview";
 
-async function fetchListOfBlogs() {
-  try {
-    const apiResponse = await fetch(`/api/get`, {
-      method: "GET",
-      cache: "no-store",
-    });
+function Blogs() {
+  const [blogList, setBlogList] = useState([]);
+  const [error, setError] = useState(null);
 
-    const result = await apiResponse.json();
+  useEffect(() => {
+    async function fetchListOfBlogs() {
+      try {
+        const apiResponse = await fetch(`/api/get`, {
+          method: "GET",
+          cache: "no-store",
+        });
 
-    return result?.data;
-  } catch (error) {
-    throw new Error(error);
+        if (!apiResponse.ok) {
+          throw new Error("Failed to fetch blog data");
+        }
+
+        const result = await apiResponse.json();
+        setBlogList(result?.data || []);
+      } catch (error) {
+        setError(error.message);
+      }
+    }
+
+    fetchListOfBlogs();
+  }, []);
+
+  if (error) {
+    return <p>Error: {error}</p>;
   }
-}
-
-async function Blogs() {
-  const blogList = await fetchListOfBlogs();
 
   return <BlogOverview blogList={blogList} />;
 }
